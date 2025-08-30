@@ -1,31 +1,234 @@
 <!DOCTYPE html>
-<html lang= 'pt-br'>
+<html lang="pt-br">
 <head>
-<title>Os Seis Niveis de cabaçalho em HTML</title>
-	<meta charset= 'Utf-8'>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Cinema Agora</title>
+  <meta name="description" content="Filmes em cartaz por cidade, com busca, filtro por gênero e horários."/>
+  <style>
+    :root{
+      --bg:#0b0e14;
+      --card:#101522;
+      --muted:#8a94a6;
+      --text:#e6eaf2;
+      --brand:#facc15;
+      --accent:#60a5fa;
+      --radius:16px;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,Cantarell,Noto Sans,sans-serif;
+      color:var(--text);
+      background:radial-gradient(1200px 800px at 10% -10%, #122038 0%, transparent 60%),
+                 radial-gradient(1000px 600px at 120% 10%, #1d1530 0%, transparent 60%),
+                 var(--bg);
+    }
+    header{
+      position:sticky;top:0;z-index:10;
+      backdrop-filter:saturate(1.2) blur(10px);
+      background:linear-gradient(180deg, rgba(11,14,20,.9), rgba(11,14,20,.6));
+      border-bottom:1px solid rgba(255,255,255,.06);
+    }
+    .wrap{max-width:1100px;margin:0 auto;padding:16px 20px}
+    .row{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+    h1{font-size:clamp(22px,2.6vw,34px);margin:0;font-weight:800;letter-spacing:.5px}
+    .badge{display:inline-flex;align-items:center;gap:8px;font-weight:600;color:#111;background:var(--brand);padding:6px 10px;border-radius:999px}
+    nav .row{justify-content:space-between}
+
+    /* links de cidades no topo */
+    .nav-links a{
+      color:#fff;
+      text-decoration:none;
+      font-weight:600;
+      padding:6px 12px;
+      border-radius:20px;
+    }
+    .nav-links a:hover{
+      background:rgba(255,255,255,0.1);
+    }
+
+    .controls{margin-top:12px;display:grid;grid-template-columns:1fr 160px 1fr;gap:12px}
+    .controls .full{grid-column:1/-1}
+    input,select,button{width:100%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,.1);background:rgba(255,255,255,.04);color:var(--text)}
+    input::placeholder{color:var(--muted)}
+
+    /* deixar opções do select pretas */
+    select option{color:#000;}
+
+    .chips{display:flex;flex-wrap:wrap;gap:8px}
+    .chip{padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.08);cursor:pointer;user-select:none;color:var(--text)}
+    .chip.active{outline:2px solid var(--accent);}
+    .clear{background:transparent;color:var(--muted);border:1px dashed rgba(255,255,255,.18)}
+
+    .grid{display:grid;gap:18px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));padding:24px 0}
+    .card{background:linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.02));
+          border:1px solid rgba(255,255,255,.08);border-radius:var(--radius);overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+    .poster{aspect-ratio:2/3;width:100%;object-fit:cover;background:#0a0a0a}
+    .card .body{padding:14px}
+    .title{font-weight:800;margin:0 0 6px;font-size:16px}
+    .meta{color:var(--muted);font-size:13px}
+    .times{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px}
+    .time{padding:6px 10px;border-radius:10px;border:1px solid rgba(255,255,255,.15);font-weight:600}
+
+    footer{border-top:1px solid rgba(255,255,255,.08);color:var(--muted)}
+
+    dialog{border:none;border-radius:16px;background:var(--card);color:var(--text);padding:0;max-width:560px;width:92%}
+    dialog::backdrop{background:rgba(0,0,0,.6)}
+    .dialog-body{padding:18px}
+    .dialog-head{display:flex;justify-content:space-between;align-items:center;padding:12px 16px;border-bottom:1px solid rgba(255,255,255,.08)}
+    .close{background:transparent;border:1px solid rgba(255,255,255,.15);padding:8px 12px;border-radius:999px;color:var(--text)}
+
+    @media (max-width:640px){
+      .controls{grid-template-columns:1fr}
+    }
+  </style>
 </head>
 <body>
-<img src='gato.webp' alt= 'gato laranja'>
-<h1>Lorem ipsum</h1>
-<p> dolor sit amet, consectetur adipiscing elit. Maecenas eu imperdiet nunc, in bibendum turpis. Sed dictum, urna eu sagi1ttis malesuada, lacus tortor finibus quam, sed vestibulum nunc elit vitae mi. Pellentesque eget imperdiet nibh. Donec in nisi risus. Fusce sit amet auctor tellus. Mauris a imperdiet ante, non posuere erat. Duis convallis elit sollicitudin, dictum lorem at, porttitor dolor. Praesent quis tortor dolor. Integer viverra massa a felis ultrices, ut sollicitudin elit rhoncus. Pellentesque in cursus ex. Vestibulum vitae efficitur magna, a venenatis augue. Donec ornare finibus hendrerit. Nulla pellentesque vel ante in lacinia. Donec sit amet nulla sem.</p>
+  <header>
+    <div class="wrap">
+      <nav class="row" aria-label="principal">
+        <div class="row" style="gap:10px">
+          <span class="badge" aria-label="marca">🎬 Cinema Agora</span>
+          <h1>Filmes em Cartaz</h1>
+        </div>
+        <div class="row nav-links" role="group" aria-label="links de cidades">
+          <a href="#" data-city="SP">São Paulo</a>
+          <a href="#" data-city="RJ">Rio de Janeiro</a>
+          <a href="#" data-city="BH">Belo Horizonte</a>
+        </div>
+      </nav>
 
-<h2>Integer elit</h2>
-<p>velit varius non molestie ut, sollicitudin eu quam. Quisque ultrices mi posuere est mollis hendrerit. Ut ipsum metus, fermentum vitae lobortis in, elementum ut mi. Suspendisse nec est a lectus malesuada pretium ac at mauris. Aenean quis posuere lectus, non convallis sapien. Sed vel laoreet lectus. Sed bibendum id nisi eget ullamcorper. Proin sollicitudin viverra hendrerit. Sed bibendum imperdiet facilisis. Nam rhoncus nisi sit amet diam eleifend, in condimentum est feugiat. Pellentesque habitant morbi tristique senectus et netus et malesuada fames ac turpis egestas. Curabitur maximus neque justo, vitae aliquet urna fringilla sed. Proin fringilla viverra nunc in cursus. Aenean pretium, velit at blandit congue, justo libero euismod elit, in vulputate metus risus in mauris. Nulla commodo ut turpis ut gravida.</p>
+      <section class="controls" aria-label="filtros e busca">
+        <input id="q" type="search" placeholder="Buscar filme, diretor..." aria-label="Buscar" />
+        <select id="city" aria-label="Cidade">
+          <option value="">Todas as cidades</option>
+          <option value="SP">São Paulo</option>
+          <option value="RJ">Rio de Janeiro</option>
+          <option value="BH">Belo Horizonte</option>
+        </select>
+        <div class="chips" id="genres" role="group" aria-label="Gêneros">
+          <button class="chip" data-genre="Ação">Ação</button>
+          <button class="chip" data-genre="Comédia">Comédia</button>
+          <button class="chip" data-genre="Drama">Drama</button>
+          <button class="chip" data-genre="Terror">Terror</button>
+          <button class="chip clear" id="clearGenres">Limpar</button>
+        </div>
+      </section>
+    </div>
+  </header>
 
-<img src= 'persa.jfif' alt= 'gato persa'>
-<h3>In sit</h3> 
-<p>amet consectetur nulla. Etiam eget hendrerit diam. Proin a suscipit leo. Proin placerat commodo purus, vitae commodo neque aliquam eget. Maecenas nec massa eros. Fusce molestie vestibulum justo et mattis. Nullam eleifend felis id rutrum rutrum. Donec at maximus leo. Cras velit augue, vulputate ac urna et, scelerisque rutrum diam. Praesent sagittis lacinia eleifend. Aliquam at metus sed sem laoreet pulvinar. Fusce tristique sit amet sapien sed pharetra. Integer magna nibh, dignissim in nulla et, malesuada rhoncus augue.</p>
+  <main class="wrap">
+    <section id="list" class="grid" aria-live="polite"></section>
+  </main>
 
-<h4>In finibus</h4>
- <p>congue pharetra. Sed consectetur imperdiet congue. Pellentesque tincidunt nisl eget mauris ullamcorper, non euismod nunc mollis. Aenean sit amet mauris enim. Duis mi nisl, tincidunt vulputate dapibus quis, sollicitudin a nisl. Duis porta dolor vel elit consectetur pellentesque. Cras sollicitudin urna quis feugiat lobortis. Nulla efficitur est in elit euismod, nec ullamcorper metus placerat. In id purus ac leo tincidunt placerat a ac ipsum. Vestibulum vel ex tempus ex gravida fringilla. Maecenas volutpat nunc neque, ac pulvinar lorem fermentum vitae. Aenean ornare hendrerit turpis id luctus. Morbi efficitur, nisl eu elementum efficitur, ipsum nisi ultricies lacus, ullamcorper elementum massa ligula non ex.</p>
- 
-<img src= 'cinza.jfif' alt= 'gato cinza'>
-<h5>Nulla tempor</h5>
-<p> pellentesque ipsum, a congue tortor viverra sit amet. Praesent ex lorem, consectetur a blandit tristique, volutpat eu mi. Nulla sed dapibus neque. Vestibulum tristique tristique dolor nec blandit. Ut nec lectus sit amet orci rutrum pretium vel non metus. Sed viverra risus eget dolor luctus, at accumsan est mollis. Duis lobortis tellus quis ante pretium pretium. Aenean at placerat leo. Curabitur luctus, tortor quis auctor cursus, mauris dolor lacinia enim, eu ornare nunc eros vel odio.</p>
+  <footer>
+    <div class="wrap" style="padding:20px">&copy; <span id="year"></span> Cinema Agora — Dados de exemplo.</div>
+  </footer>
 
-<h6>In vehicula</h6>
-<p> mi libero, ac varius libero ultrices nec. Morbi vulputate enim mi, in pulvinar velit eleifend quis. Morbi sem velit, blandit ac pulvinar quis, eleifend eget velit. Ut vitae dignissim elit, consectetur faucibus lectus. Etiam ac eleifend ipsum, quis lacinia ipsum. Vivamus nec velit imperdiet, rhoncus felis sed, blandit dui. Maecenas non ultricies quam. Etiam massa elit, dapibus maximus ex in, tincidunt varius nunc. Etiam non condimentum magna, non tempor massa. Aenean faucibus tellus ac mattis porttitor. Nam vitae aliquet sem.</p>
+  <dialog id="details">
+    <div class="dialog-head">
+      <strong id="dlgTitle">Detalhes</strong>
+      <button class="close" id="btnClose" aria-label="Fechar">Fechar</button>
+    </div>
+    <div class="dialog-body" id="dlgBody"></div>
+  </dialog>
 
+  <script>
+    const MOVIES = [
+      {
+        id: 1,
+        title: "Superman",
+        genre: ["Ação"],
+        duration: 125,
+        rating: 12,
+        cities: ["SP","RJ"],
+        times: ["14:00","18:00","21:00"],
+        poster: "https://cdn.musicboard.app/musicboard/media/8GMjD631EPds5IQ6c5PwZuFyg7tSa2HLAcXDFCBQwZbtwhP3jrT9uR2CzBW1h2zD.webp",
+        synopsis: "Clark Kent precisa equilibrar sua vida como repórter e herói para proteger Metrópolis de uma nova ameaça."
+      },
+      {
+        id: 2,
+        title: "Interstellar",
+        genre: ["Drama","Ficção Científica"],
+        duration: 169,
+        rating: 12,
+        cities: ["SP","BH"],
+        times: ["15:30","19:10","22:00"],
+        poster: "https://waltermattos.com/site2/wp-content/uploads/2014/11/tut_Analise_Grafica_Cartaz_Interstellar_05_011.png",
+        synopsis: "As reservas naturais da Terra estão chegando ao fim e um grupo de astronautas recebe a missão de verificar possíveis planetas para receberem a população mundial."
+      },
+      {
+        id: 3,
+        title: "Quarteto Fantástico",
+        genre: ["Ação"],
+        duration: 97,
+        rating: 10,
+        cities: ["RJ"],
+        times: ["13:10","17:20","20:40"],
+        poster: "https://br.web.img3.acsta.net/img/57/e0/57e051a8f6184b1a6ea14854e191817c.jpg",
+        synopsis: "Um grupo de astronautas passa por uma tempestade cósmica durante seu voo experimental e descobre que possui novas e bizarras habilidades."
+      }
+    ];
 
+    const state = { q: '', city: '', genres: new Set() };
+    const $ = (sel, el=document) => el.querySelector(sel);
+    const $$ = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+
+    const details = document.getElementById('details');
+    const btnClose = document.getElementById('btnClose');
+    btnClose.addEventListener('click', () => details.close());
+
+    function render(){
+      const list = $('#list');
+      const filtered = MOVIES.filter(m => {
+        const inCity = state.city ? m.cities.includes(state.city) : true;
+        const inGenre = state.genres.size ? m.genre.some(g => state.genres.has(g)) : true;
+        const inQuery = state.q ? (m.title.toLowerCase().includes(state.q) || (m.synopsis||'').toLowerCase().includes(state.q)) : true;
+        return inCity && inGenre && inQuery;
+      });
+
+      list.innerHTML = filtered.map(m => Card(m)).join('') || `<p class="meta">Nenhum filme encontrado.</p>`;
+      $$('.card').forEach(c => c.addEventListener('click', () => openDetails(+c.dataset.id)));
+      $$('.time').forEach(btn => btn.addEventListener('click', (e) => { e.stopPropagation(); openDetails(+btn.closest('.card').dataset.id)}));
+    }
+
+    function Card(m){
+      return `
+        <article class="card" data-id="${m.id}" tabindex="0" role="button" aria-pressed="false">
+          <img class="poster" src="${m.poster}" alt="Cartaz do filme ${m.title}">
+          <div class="body">
+            <h3 class="title">${m.title}</h3>
+            <div class="meta">${m.genre.join(', ')} • ${m.duration} min • ${m.rating}+ • ${m.cities.join(' | ')}</div>
+            <div class="times">${m.times.map(t=>`<span class="time" aria-label="Sessão às ${t}">${t}</span>`).join('')}</div>
+          </div>
+        </article>`
+    }
+
+    function openDetails(id){
+      const m = MOVIES.find(x=>x.id===id);
+      if(!m) return;
+      $('#dlgTitle').textContent = m.title;
+      $('#dlgBody').innerHTML = `
+        <div class="row" style="align-items:flex-start;gap:16px">
+          <img class="poster" style="max-width:180px;border-radius:12px" src="${m.poster}" alt="Cartaz do filme ${m.title}">
+          <div>
+            <p class="meta" style="margin:0 0 8px">${m.genre.join(', ')} • ${m.duration} min • Classificação ${m.rating}</p>
+            <p>${m.synopsis || ''}</p>
+            <div class="times">${m.times.map(t=>`<button class="time" aria-label="Comprar para ${t}">${t}</button>`).join('')}</div>
+          </div>
+        </div>`;
+      details.showModal();
+    }
+
+    $('#q').addEventListener('input', e => { state.q = e.target.value.trim().toLowerCase(); render(); });
+    $('#city').addEventListener('change', e => { state.city = e.target.value; render(); });
+    $$('#genres .chip[data-genre]').forEach(btn=> btn.addEventListener('click', ()=>{ const g=btn.dataset.genre; if(state.genres.has(g)) state.genres.delete(g); else state.genres.add(g); btn.classList.toggle('active'); render(); }));
+    $('#clearGenres').addEventListener('click', ()=>{ state.genres.clear(); $$('#genres .chip[data-genre]').forEach(b=>b.classList.remove('active')); render(); });
+
+    document.getElementById('year').textContent = new Date().getFullYear();
+    render();
+  </script>
 </body>
 </html>
